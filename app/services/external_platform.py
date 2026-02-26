@@ -60,14 +60,18 @@ class GitHubExternalPlatformService(ExternalPlatformService):
         return await anyio.to_thread.run_sync(_create)
 
     async def handle_task_created(self, task: Task) -> None:
+        print("🔥 Background triggered for task:", task.id)
+
         payload = self._build_payload(task)
         try:
             issue_number = await self._create_issue_sync(payload)
+            print("✅ Issue created:", issue_number)
             if issue_number is not None:
-                await self._repository.set_external_reference(
+                updated = await self._repository.set_external_reference(
                     task_id=task.id, reference_id=str(issue_number)
                 )
-        except Exception:
-            
+                print("📌 Update result:", updated)
+        except Exception as e:
+            print("GitHub issue creation failed:", e)
             return
 

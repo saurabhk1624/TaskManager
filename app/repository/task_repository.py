@@ -1,10 +1,13 @@
 from datetime import datetime
 from typing import Any, List, Optional
 
+from app.models import task
 from motor.motor_asyncio import AsyncIOMotorCollection
-
+from bson import ObjectId
 from app.models.task import Task
 from app.schemas.task_schema import TaskCreate, TaskUpdate
+from pymongo import ReturnDocument
+
 
 
 class TaskRepository:
@@ -89,6 +92,8 @@ class TaskRepository:
     async def set_external_reference(
         self, task_id: str, reference_id: str
     ) -> Optional[Task]:
+        print("Task ID type:", type(task_id))
+        print("Task ID value:", task_id)
         result = await self._collection.find_one_and_update(
             {"id": task_id},
             {
@@ -97,9 +102,11 @@ class TaskRepository:
                     "updated_at": datetime.utcnow(),
                 }
             },
-            return_document=True,
+            return_document=ReturnDocument.AFTER
         )
+        print("Mongo update raw result:", result)
         if not result:
+            print("⚠ No document matched for update")
             return None
         return self._document_to_task(result)
 

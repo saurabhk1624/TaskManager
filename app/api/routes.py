@@ -22,6 +22,7 @@ router = APIRouter()
 def get_task_repository(request: Request) -> TaskRepository:
     repo = getattr(request.app.state, "task_repository", None)
     if repo is None:
+        print("TaskRepository not found in application state")
         raise RuntimeError("TaskRepository is not configured on application state")
     return repo
 
@@ -51,6 +52,8 @@ async def create_task(
     task: Task = await repo.create_task(payload)
     # Fire-and-forget background integration; failures are swallowed.
     background_tasks.add_task(external_service.handle_task_created, task)
+    # await external_service.handle_task_created(task)
+
     return TaskOut.model_validate(task)
 
 

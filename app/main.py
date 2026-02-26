@@ -6,10 +6,13 @@ from fastapi import FastAPI
 from app.api import routes as task_routes
 from app.core.config import get_settings
 from app.db.mongo import MongoClientManager
-from app.repository.task_repository import TaskRepository
+from  app.repository.task_repository import TaskRepository
 from app.services.external_platform import GitHubExternalPlatformService
+# from core.logging_config import setup_logging
+import uvicorn
+# from core.config import settings
 
-
+# setup_logging(settings.log_level)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
@@ -42,4 +45,14 @@ app = FastAPI(
 
 
 app.include_router(task_routes.router)
+
+if __name__ == "__main__":
+    try:
+        print("Starting server...")
+        uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)
+    except Exception as e:
+        print(f"Server failed to start: {e}")
+        raise
+
+
 
