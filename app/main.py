@@ -46,13 +46,6 @@ app = FastAPI(
 
 app.include_router(task_routes.router)
 
-if __name__ == "__main__":
-    try:
-        print("Starting server...")
-        uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)
-    except Exception as e:
-        print(f"Server failed to start: {e}")
-        raise
 
 
 

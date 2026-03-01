@@ -69,7 +69,7 @@ class TaskRepository:
         result = await self._collection.find_one_and_update(
             {"id": task_id},
             {"$set": update_data},
-            return_document=True,
+            return_document=ReturnDocument.AFTER,
         )
         if not result:
             return None
@@ -83,7 +83,7 @@ class TaskRepository:
         result = await self._collection.find_one_and_update(
             {"id": task_id},
             {"$set": {"is_completed": True, "updated_at": datetime.utcnow()}},
-            return_document=True,
+            return_document=ReturnDocument.AFTER,
         )
         if not result:
             return None
