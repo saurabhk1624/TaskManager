@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     volumes:
       - .:/app 
-    command: /bin/sh -c "while sleep 1000; do :; done"
+    # command: /bin/sh -c "while sleep 1000; do :; done"
 
   mongo-db:
     image: mongo:7

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager-api
+  labels:
+    app: task-manager-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-manager-api
+  template:
+    metadata:
+      labels:
+        app: task-manager-api
+    spec:
+      containers:
+        - name: task-manager-api
+          image: task-manager-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: APP_NAME
+              value: "task-manager"
+            - name: APP_ENV
+              value: "production"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: PORT
+              value: "8000"
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: task-manager-secrets
+                  key: MONGO_URI
+            - name: MONGO_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: task-manager-secrets
+                  key: MONGO_DB_NAME
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: task-manager-secrets
+                  key: GITHUB_TOKEN
+            - name: GITHUB_REPO
+              valueFrom:
+                secretKeyRef:
+                  name: task-manager-secrets
+                  key: GITHUB_REPO
